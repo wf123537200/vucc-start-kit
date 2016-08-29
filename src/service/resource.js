@@ -1,16 +1,11 @@
 import Vue from 'vue';
 import vueResource from 'vue-resource';
-import {GE} from 'src/config';
+import {conf} from 'src/config';
 import {getCookie} from 'service/cookies';
 
 Vue.use(vueResource);
 
 export default {
-    domainPath: GE.domainPath,
-    urlRoot :  GE.stepApiPath,
-    rootUrl : GE.stepApiPath,
-    timeout : GE.timeOut,
-
     /**
      * post公共方法
      * @param method    请求方法名
@@ -235,7 +230,7 @@ export default {
                     break;
                 }
                 case '500': {
-                    GRI.UI.alert('操作失败');
+                    alert('操作失败');
                     break;
                 }
                 default: {
@@ -279,11 +274,11 @@ export default {
      */
     addGlobalParams(params) {
         if (params == null)  params = {};
-        params['ge_portal_name'] = GE.GLOBAL.portal_name;
-        params['ge_portal_type'] = GE.GLOBAL.portal_type;
-        params['ge_sys_type'] = GE.GLOBAL.sys_type;
-        if (GE.GLOBAL['page_id'] != '') {
-            params['ge_page_id'] = GE.GLOBAL['page_id'];
+        params['ge_portal_name'] = conf.GLOBAL.portal_name;
+        params['ge_portal_type'] = conf.GLOBAL.portal_type;
+        params['ge_sys_type'] = conf.GLOBAL.sys_type;
+        if (conf.GLOBAL['page_id'] != '') {
+            params['ge_page_id'] = conf.GLOBAL['page_id'];
         }
 
         //随机数，防止提交相同数据不执行
@@ -297,113 +292,18 @@ export default {
      * @param result
      */
     handleAPIError(result) {
-        var _this = this;
-        let loadDiv = document.querySelector("#loadDiv");
-        if(loadDiv && loadDiv.length > 0) loadDiv.style.display = 'none';
-
-        //隐藏loading
-        var $loading = document.querySelector('body > .mod-loading');
-        if ($loading && $loading.length != 0) {
-            $loading.style.display = 'none';
-        }
-
-        if (result && typeof result['statusText'] != 'undefined' && result['statusText'] != '') {
-            GRI.UI.alert(result['statusText']);
-            return;
-        }
-
-        //隐藏loading
-        if (document.querySelector('.mod-loading') && document.querySelector('.mod-loading').style.display != 'none') {
-            document.querySelector('.mod-loading').style.display = 'none';
-        }
-
-        //显示下一步的按钮
-        Array.from(document.querySelectorAll('#stepNextBtn, #startStep')).forEach((it) => {
-            it.className = it.className.replace(/\s?disabled\s?/, ' primary ');
-        });
-
-        if (result && typeof result.status !== 'undefined') {
-            if (result.status == 401 && typeof result['statusText'] !== 'undefined' && result['statusText'] == 'Unauthorized') {
-                //session超时，则刷新页面
-                location.reload();
-                return;
-            } else if (result.status == 0 && typeof result['statusText'] !== 'undefined') {
-                //页面刷新
-                return;
-            } else if (result.status == 403) {
-                GRI.UI.warn('无操作权限！', function() {
-                    window.location.href = _this.domainPath;
-                });
-                return;
-            }
-        }
-
-        if(result.hasOwnProperty('message')) {
-            if (result.message == 'cluster not found') {
-                location.href = '#step';
-                return;
-            }
-            var msg = _this.translate(result.message);
-
-            if (msg == '集群还未安装~' || msg == '该服务还未安装~') {
-                _this.pageNotice(msg);
-            } else {
-                GRI.UI.alert(msg);
-            }
-            return false;
-        }
     },
 
     //解析出错
     explainError(msg) {
-        var text = '系统出错！请稍后再试，';
-
-        text += '</p><p><a class="confirm-trigger" href="javascript:void(0);">错误详情<i class="ui-i ui-i-tri"></i></a>';
-        return text;
     },
 
     translate(msg) {
-        var map = {
-            'cluster not found' : '集群还未安装~',
-            'fail to fetch.*?host.*?' : '该服务还未安装~',
-            'fail to fetch.*' : '该服务还未安装~',
-            'nameExits' : '名称已存在',
-            '.*nameExits' : '用户名已存在',
-            'name conflict' : '文件名冲突',
-            'content conflict' : '文件内容冲突',
-            'file not found' : '上传失败',
-            'upload ftp error.*' : 'ftp 上传失败',
-            'can not get .*' : '组件还未安装~',
-            'service .* is not available' : '该组件已停止运行!',
-            'invalid weight of yarn' : '无效的权值配置',
-            'invalid vcore and memory settings' : '无效的虚拟内核或内存配置',
-            'no resource in yarn' : '集群无资源',
-            'vcore and memory settings more than total' : '虚拟内核或内存配置超过资源池的总量',
-            'field QueueConfigEntity' : '资源池创建失败'
-        };
-        for (var key in map) {
-            var reg = new RegExp("^"+key+"document.querySelector");
-            if (reg.test(msg)) {
-                return map[key];
-            }
-        }
-        return msg;
     },
 
     showError(msg) {
-        document.querySelector('.layout-main-cnt').innerHTML = '<div class="cnt-inner">'
-            + '<div class="wrapper gui-no-access">'
-            + '  <div class="access-cnt">'
-            + '    <i class="icon i-404"></i>'
-            + '   <h3>页面发生错误</h3>'
-            + '   <p>' + msg + '</p>'
-            + '  </div>'
-            + '</div>'
-            + '</div>';
     },
 
     pageNotice(msg) {
-        document.querySelector('#body').innerHTML = '<div class="gui-nodata"><i class="gui-i nodata"></i><div class="ctn">' + msg + '</div></div>';
-        return false;
     }
 };

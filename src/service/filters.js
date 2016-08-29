@@ -6,8 +6,9 @@
 exports.translate = (text) => {
     let translation ={
       'hello world!': '您好，世界！'
-    }
-    let lowerText = text.toLowerCase()
+    };
+
+    let lowerText = text.toLowerCase();
 
     return lowerText in translation ? translation[lowerText] : text
-}
+};

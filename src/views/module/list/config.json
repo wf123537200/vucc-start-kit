@@ -1,7 +1,6 @@
 {
   "common": [
-    "jquery/jquery.min.js",
-    "gri/gri.js"
+    "jquery/jquery.min.js"
   ]
 }
 

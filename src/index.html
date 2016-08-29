@@ -2,27 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>大数据套件</title>
+    <title>种子项目</title>
 
     <!-- import global css-->
-    <link rel="stylesheet" href="./assets/tbd-design/css/tbd-index.css">
-    <link rel="stylesheet" href="./assets/imgcache/css/global.css">
 </head>
-<body id="app">
-    <div class="gui-layout new">
-        <v-sidebar></v-sidebar>
-        <div class="layout-main">
-            <div>
-                <v-header></v-header>
-            </div>
-            <div id="body">
-                <v-index></v-index>
-            </div>
-        </div>
+<body>
+    <v-header></v-header>
+    <v-sidebar></v-sidebar>
+    <div id="app" style="margin-left: 50px;">
+        <router-view></router-view>
     </div>
 </body>
 <!-- 此处填入需要调试的页面js引用代码 -->
-<script src="../dist/workflow/list/common.js"></script>
-<script src="../dist/workflow/list/index.js"></script>
+<script src="../dist/module/list/common.js"></script>
+<script src="../dist/module/list/index.js"></script>
 </html>
 

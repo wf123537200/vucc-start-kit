@@ -28,14 +28,14 @@ function getEntry() {
     walk(srcPath);
 
     fileList = fileList.filter(function(it) {
-        return it.match(/index\.vue/);
+        return it.match(/index\.js/);
     });
 
     //console.log(fileList);
 
     fileList.forEach(function(it) {
         var path = it.substr(srcPath.length);
-        res[path.substr(0, path.length - 4)] = it;
+        res[path.substr(0, path.length - 3)] = [it];
     });
 
     return res;
@@ -43,13 +43,10 @@ function getEntry() {
 
 //webpack插件
 var plugins = [
-    //提公用js到common.js文件中
-    //new webpack.optimize.CommonsChunkPlugin('common.js'),
-    //将样式统一发布到style.css中
-    new ExtractTextPlugin("style.css", {
-        allChunks: true,
-        disable: false
-    })
+    // new ExtractTextPlugin("style.css", {
+    //     allChunks: true,
+    //     disable: false
+    // })
 ];
 
 var entry = getEntry(),
@@ -85,12 +82,16 @@ module.exports = {
             loader: 'vue',
         }, {
             test: /\.scss$/,
-            loader: ExtractTextPlugin.extract(
-                "style-loader", 'css-loader?sourceMap!sass-loader!cssnext-loader')
+            loader: "style-loader!css-loader?sourceMap!cssnext-loader"
+            // 抽离css
+            // loader: ExtractTextPlugin.extract(
+            //     "style-loader", 'css-loader?sourceMap!sass-loader!cssnext-loader')
         }, {
             test: /\.css$/,
-            loader: ExtractTextPlugin.extract(
-                "style-loader", "css-loader?sourceMap!cssnext-loader")
+            loader: "style-loader!css-loader?sourceMap!cssnext-loader"
+            // 抽离css
+            // loader: ExtractTextPlugin.extract(
+            //     "style-loader", "css-loader?sourceMap!cssnext-loader")
         }, {
             test: /\.js$/,
             loader: 'babel',
@@ -104,11 +105,8 @@ module.exports = {
             test: /\.(jpg|png|gif)$/,
             loader: "file-loader?name=images/[hash].[ext]"
         }, {
-            test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            loader: "url-loader?limit=10000&minetype=application/font-woff"
-        }, {
-            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            loader: "file-loader"
+            test   : /\.woff|\.woff2|\.svg|.eot|\.ttf/,
+            loader : 'url'
         }, {
             test: /\.json$/,
             loader: 'json'
