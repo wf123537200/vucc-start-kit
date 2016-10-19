@@ -2,9 +2,6 @@
     <div class="doc-header">
         <div class="inner">
             <ul class="nav">
-                <li class="current">
-                    <a href="#/index">首页</a>
-                </li>
                 <li>
                     <a href="#/demo">demo</a>
                 </li>

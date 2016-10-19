@@ -1,3 +1,6 @@
+/**
+ * vue-resource 包装
+ */
 import Vue from 'vue';
 import vueResource from 'vue-resource';
 import {conf} from 'src/config';
@@ -181,7 +184,10 @@ export default {
         window.__ajax__cache = window.__ajax__cache || {};
 
         // 请求开始
+        // 获取header头部
         const headers = this._getHeaders(type, contentType);
+        // params增加公共参数
+        this.addGlobalParams(params);
         const paramsJson = /post|delete|put/i.test(type) ? JSON.stringify(params) : params;
 
         // 如有缓存则调用缓存
@@ -202,8 +208,6 @@ export default {
             }
         }).then((result) => {
             const data = result.data;
-            // 清除定时器
-            this._clearTimeouts();
             // 处理步骤
             const returnCode = data.resultCode || data.code;
 
@@ -238,8 +242,6 @@ export default {
                 }
             }
         }, (result) => {
-            this._clearTimeouts();
-
             //出现错误有可能是因为session超时，这种情况用api检查刷新页面
             if (result.status == 403) {
                 this.showError('无权限');
@@ -250,23 +252,6 @@ export default {
         });
     },
 
-    //清除定时
-    _clearTimeouts() {
-        setTimeout(function(){
-            let bodyLoading = document.querySelector('#body_loading');
-            if (bodyLoading && bodyLoading.style.display === 'none') {
-                bodyLoading.style.display = 'none';
-            }
-        }, 2000);
-
-        var timeouts = window.TIMEOUTS || [];
-        for (var i = 0, l = timeouts.length; i < l; i++) {
-            clearTimeout(timeouts[i]);
-        }
-
-        window.TIMEOUTS = [];
-    },
-
     /**
      * 增加公共参数
      * @param params    提交数据
@@ -274,15 +259,7 @@ export default {
      */
     addGlobalParams(params) {
         if (params == null)  params = {};
-        params['ge_portal_name'] = conf.GLOBAL.portal_name;
-        params['ge_portal_type'] = conf.GLOBAL.portal_type;
-        params['ge_sys_type'] = conf.GLOBAL.sys_type;
-        if (conf.GLOBAL['page_id'] != '') {
-            params['ge_page_id'] = conf.GLOBAL['page_id'];
-        }
-
-        //随机数，防止提交相同数据不执行
-        params['t'] = Math.random();
+        // 这里可以给params增加一些公共参数
         return params;
     },
 
@@ -302,6 +279,7 @@ export default {
     },
 
     showError(msg) {
+        alert(msg);
     },
 
     pageNotice(msg) {

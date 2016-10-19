@@ -21,7 +21,7 @@ let ajax = {
     MODULE_XX: 'xx',
 };
 
-// 增加前缀
+// 增加前缀,应对接口有一样的前缀时可以使用,类似例子中的'/api/'
 let INTERFACE = {};
 for(let key in ajax) {
     INTERFACE[key] = conf.API_PATH + ajax[key];

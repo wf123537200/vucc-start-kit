@@ -963,9 +963,7 @@
     }
 </script>
 
-<style>
-    @charset "UTF-8";
-
+<style lang="scss">
     .doc-container {
         margin: 20px auto 0;
     }
@@ -1368,4 +1366,6 @@
         padding: 10px;
         border: 1px solid #999;
     }
+
+    @import "style.scss";
 </style>

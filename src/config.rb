@@ -1,3 +1,5 @@
+# sass 配置文件
+
 require 'compass/import-once/activate'
 # Require any additional compass plugins here.
 
