@@ -48,7 +48,7 @@ module.exports = {
     debug: true,
     entry: entry,
     output: {
-        path: './dist',
+        path: buildPath,
         filename: '[name].js',
         publicPath: publishPath,
         chunkFilename:"[id].build.js?[chunkhash]"
