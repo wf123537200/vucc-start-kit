@@ -5,45 +5,15 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>codemirror test</title>
-    <link rel="stylesheet" href="./libraries/codemirror.css">
-
+    <title>start kit test</title>
 </head>
 <body>
-<h2>SQL编辑器</h2>
-<form>
-    <textarea id="code" name="code" style="width: 900px; height: 300px;"></textarea>
-</form>
-<script src="./libraries/codemirror-3.11.js"></script>
-<script src="./libraries/codemirror-hql.js"></script>
-<script src="./libraries/codemirror-hql-hint.js"></script>
-<script src="./libraries/codemirror-show-hint.js"></script>
-<script src="./libraries/jquery-1.7.2.min.js"></script>
+    <div id="app">
+        <section id="body">
+            <router-view></router-view>
+        </section>
+    </div>
 
-<script>
-    CodeMirror.keywords = "server software ";
-    CodeMirror.tableKeywords = "server.ip server.cache software.conf software.version software.tags.count ";
-    var cm = CodeMirror.fromTextArea(document.getElementById("code"), {
-        lineNumbers: true,
-        extraKeys: {
-            "Ctrl": "autocomplete"
-        }, //输入s然后ctrl就可以弹出选择项
-        mode: {
-            name: "text/x-hiveql"
-        },
-        theme: "3024-day" //主题
-    });
-    cm.on('change', function() {
-        var pos = cm.cursorCoords();
-        if ($(".CodeMirror-spinner").length == 0) {
-            $("<i class='fa fa-spinner fa-spin CodeMirror-spinner'></i>").appendTo($("body"));
-        }
-        $(".CodeMirror-spinner").css("top", pos.top + "px").css("left", (pos.left - 4) + "px").show();
-
-        CodeMirror.showHint(cm, CodeMirror.hiveQLHint);
-    });
-</script>
-
-
+    <script src="/dist/router.js"></script>
 </body>
 </html>

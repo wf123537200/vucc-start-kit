@@ -104,7 +104,8 @@ module.exports = {
             service: path.join(__dirname, 'src/service'),
             components: path.join(__dirname, 'src/components'),
             src: path.join(__dirname, 'src'),
-            lib: path.join(__dirname, 'src/libraries')
+            lib: path.join(__dirname, 'src/libraries'),
+            vue: path.join(__dirname, 'vue/dist/vue.js')
         }
     },
     plugins: plugins

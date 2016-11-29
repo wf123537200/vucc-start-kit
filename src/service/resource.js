@@ -9,44 +9,6 @@ import {getCookie} from 'service/cookies';
 Vue.use(vueResource);
 
 export default {
-    /**
-     * post公共方法
-     * @param method    请求方法名
-     * @param params    参数
-     * @param callback  回调函数
-     */
-    gePost(method, params, callback) {
-        //无查询参数，用于兼容(url,callback)模式
-        if (typeof callback === 'undefined' && typeof  params === 'function') {
-            callback = params;
-            params = {};
-        }
-
-        //获取数据路径
-        this.postData(this._getUrl(method), params, (data) => {
-            callback && callback(data);
-        }, null);
-    },
-
-    /**
-     * get公共方法
-     * @param method
-     * @param params
-     * @param callback
-     */
-    geGet(method, params, callback) {
-        //无查询参数，用于兼容(url,callback)模式
-        if (typeof callback === 'undefined' && typeof  params === 'function') {
-            callback = params;
-            params = {};
-        }
-
-        //获取数据路径
-        this.getData(this._getUrl(method), params, (data) => {
-            callback && callback(data);
-        }, null);
-    },
-
     jsonp(method, params, callback) {
         //无查询参数，用于兼容(url,callback)模式
         if (typeof callback === 'undefined' && typeof  params === 'function') {
@@ -73,11 +35,14 @@ export default {
      * @param url
      * @param params
      * @param callback
-     * @param isNotCache
- *   *  @param sync
+     * @param options
      */
-    getData(url, params, callback, isNotCache, sync) {
-        this._ajaxData('get', url, params, callback, isNotCache, sync);
+    getData(url, params, callback, options) {
+        this._ajaxData('get', Object.assign({
+            url,
+            params,
+            callback
+        }, options));
     },
 
     /**
@@ -85,32 +50,28 @@ export default {
      * @param url
      * @param params
      * @param callback
-     * @param sync
-     * @param contentType
+     * @param options
      */
-    postData(url, params, callback, sync, contentType) {
-        this._ajaxData('post', url, params, callback, sync, contentType);
+    postData(url, params = {}, callback, options) {
+        this._ajaxData('post', Object.assign({
+            url,
+            params,
+            callback
+        }, options));
     },
     /**
      * 统一 通过del操作后台
      * @param url
      * @param params
      * @param callback
-     * @param sync
+     * @param options
      */
-    delData(url, params, callback, sync) {
-        this._ajaxData('DELETE', url, params, callback, sync);
-    },
-
-    /**
-     * 统一 通过del操作后台
-     * @param url
-     * @param params
-     * @param callback
-     * @param sync
-     */
-    putData(url, params, callback, sync, contenttype) {
-        this._ajaxData('PUT', url, params, callback, sync, contenttype);
+    delData(url, params, callback, options) {
+        this._ajaxData('DELETE', Object.assign({
+            url,
+            params,
+            callback
+        }, options));
     },
 
     /**
@@ -118,10 +79,14 @@ export default {
      * @param url
      * @param params
      * @param callback
-     * @param sync
+     * @param options
      */
-    putDataWithContentType(url, params, callback, sync, contenttype) {
-        this._ajaxData('PUT', url, params, callback, sync, contenttype);
+    putData(url, params, callback, options) {
+        this._ajaxData('PUT', Object.assign({
+            url,
+            params,
+            callback
+        }, options));
     },
 
     /**
@@ -162,12 +127,7 @@ export default {
      * @param sync  同步方式
      * @param contentType header content type
      */
-    _ajaxData : function (type, url, params, callback, isNotCache = true, sync, contentType) {
-        //无查询参数，用于兼容(url,callback)模式
-        if (typeof callback === 'undefined' && typeof  params === 'function') {
-            callback = params;
-            params = {};
-        }
+    _ajaxData : function (type, {url, params, callback, isNotCache = true, sync, contentType}) {
         // 如果是非get请求,则没有isNotCache参数后续参数前移
         if(!/get/i.test(type)) {
             isNotCache = sync;
@@ -207,14 +167,14 @@ export default {
                 window.REQUESTS.push(xhr);
             }
         }).then((result) => {
-            const data = result.data;
+            const data = result.data
             // 处理步骤
-            const returnCode = data.resultCode || data.code;
+            const returnCode = data.rtncode;
 
-            switch(returnCode) {
+            switch(returnCode + '') {
                 case 'ok':
                 case '0': {
-                    const resData = data.resultData !== undefined ? data.resultData : data.data;
+                    const resData = data.rtndata || {};
                     callback && callback(resData);
                     // 缓存数据
                     if(/get/i.test(type) && !isNotCache) {
@@ -230,7 +190,7 @@ export default {
                     break;
                 }
                 case '407': {
-                    window.location.href = data.resultData;
+                    window.location.href = data.rtndata;
                     break;
                 }
                 case '500': {

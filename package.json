@@ -67,6 +67,7 @@
     "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.0.0",
     "vue-loader": "^7.2.0",
+    "vue-router": "^2.0.3",
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0",
     "webpack-zepto": "0.0.1"
@@ -74,12 +75,11 @@
   "dependencies": {
     "ansi-styles": "^2.2.1",
     "escape-string-regexp": "^1.0.5",
-    "vue": "1.0.26",
+    "vue": "^2.0.3",
     "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.2.0",
     "vue-loader": "^8.5.2",
-    "vue-resource": "^0.7.4",
-    "vue-router": "^0.7.5",
+    "vue-router": "^2.0.3",
     "vue-style-loader": "^1.0.0"
   }
 }
